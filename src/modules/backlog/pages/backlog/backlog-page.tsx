@@ -1,238 +1,111 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BacklogService } from "../../services/backlog.service";
 import { BacklogRepository } from "../../repositories/backlog.repository";
 import { Store } from "../../../../core/state/app-store";
 import { PresetType } from "../../../../core/models/domain/types";
 import { PtItem } from "../../../../core/models/domain";
-import { ItemType } from "../../../../core/constants";
 
 import './backlog-page.css';
 
 import { AppPresetFilter } from "../../../../shared/components/preset-filter/preset-filter";
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
 import { PtNewItem } from "../../../../shared/models/dto/pt-new-item";
-import { EMPTY_STRING } from "../../../../core/helpers";
-import { getIndicatorClass } from "../../../../shared/helpers/priority-styling";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { AddItemModal } from "../../components/add-item-modal/add-item-modal";
+import { BacklogList } from "../../components/backlog-list/backlog-list";
 
 
-interface BacklogPageState {
-    currentPreset: PresetType;
-    items: PtItem[];
-    showAddModal: boolean;
-    newItem: PtNewItem;
-}
+const store: Store = new Store();
+const backlogRepo: BacklogRepository = new BacklogRepository();
+const backlogService: BacklogService = new BacklogService(backlogRepo, store);
 
-export class BacklogPage extends React.Component<any, BacklogPageState> {
+type GetPtItemsParams = Parameters<typeof backlogService.getItems>;
 
-    private store: Store = new Store();
-    private backlogRepo: BacklogRepository = new BacklogRepository();
-    private backlogService: BacklogService = new BacklogService(this.backlogRepo, this.store);
+export function BacklogPage() {
 
-    public items: PtItem[] = [];
-    public itemTypesProvider = ItemType.List.map((t) => t.PtItemType);
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    
+    const { preset } = useParams() as {preset: PresetType};
+    const [currentPreset, setCurrentPreset] = useState<PresetType>(preset ? preset : 'open');
 
-    constructor(props: any) {
-        super(props);
-        const { preset } = this.props.match.params;
-        this.state = {
-            currentPreset: preset ? preset : 'open',
-            items: [],
-            showAddModal: false,
-            newItem: this.initModalNewItem()
-        };
+    const useItems = (...params: GetPtItemsParams) => {
+        return useQuery<PtItem[], Error>(getQueryKey(), () => backlogService.getItems(...params));
+    }
+    const queryResult = useItems(currentPreset);
+    const items = queryResult.data;
+
+    function getQueryKey() {
+        return ['items', currentPreset];
     }
 
-    public componentDidMount() {
-        this.refresh();
-    }
-
-    public componentDidUpdate(prevsProps: any, prevState: BacklogPageState) {
-        if (this.state.currentPreset !== prevState.currentPreset) {
-            this.refresh();
+    const addItemMutation = useMutation(async (newItem: PtNewItem) => {
+        if (store.value.currentUser) {
+            const createdItem = await backlogService.addNewPtItem(newItem, store.value.currentUser);
+            return createdItem;
         }
+    });
+    
+    useEffect(()=>{
+        navigate(`/backlog/${[currentPreset]}`);
+    },[currentPreset]);
+    
+    const [isAddModalShowing, setIsAddModalShowing] = useState(false);
+
+    function onSelectPresetTap(preset: PresetType) {
+        setCurrentPreset(preset);
     }
 
-    public getIndicatorImage(item: PtItem) {
-        return ItemType.imageResFromType(item.type);
+    function toggleModal() {
+        setIsAddModalShowing(!isAddModalShowing);
     }
 
-    public getPriorityClass(item: PtItem): string {
-        const indicatorClass = getIndicatorClass(item.priority);
-        return indicatorClass;
-    }
-
-    private onSelectPresetTap(preset: PresetType) {
-        this.setState({
-            currentPreset: preset
-        });
-        this.props.history.push(`/backlog/${[preset]}`);
-    }
-
-    private refresh() {
-        this.backlogService.getItems(this.state.currentPreset)
-            .then(ptItems => {
-                this.setState({
-                    items: ptItems
-                });
-            });
-    }
-
-    public listItemTap(item: PtItem) {
-        // navigate to detail page
-        this.props.history.push(`/detail/${item.id}`);
-    }
-
-
-    private toggleModal() {
-        this.setState({
-            showAddModal: !this.state.showAddModal
+    function onNewItemSave(newItem: PtNewItem) {
+        return addItemMutation.mutateAsync(newItem, {
+            onSuccess(createdItem, variables, context) {
+                queryClient.invalidateQueries(getQueryKey());
+            },
         });
     }
 
-    public onFieldChange(e: any, formFieldName: string) {
-        if (!this.state.newItem) {
-            return;
-        }
 
-        this.setState({
-            newItem: { ...this.state.newItem, [formFieldName]: e.target.value }
-        });
-    }
-
-    public onAddSave() {
-        if (this.store.value.currentUser) {
-            this.backlogService.addNewPtItem(this.state.newItem, this.store.value.currentUser)
-                .then((nextItem: PtItem) => {
-                    this.setState({
-                        showAddModal: false,
-                        newItem: this.initModalNewItem(),
-                        items: [nextItem, ...this.state.items]
-                    });
-                });
-        }
-    }
-
-    private initModalNewItem(): PtNewItem {
-        return {
-            title: EMPTY_STRING,
-            description: EMPTY_STRING,
-            typeStr: 'PBI'
-        };
-    }
-
-    public render() {
-
-        const rows = this.state.items.map(i => {
-            return (
-                <tr key={i.id} className="pt-table-row" onClick={(e) => this.listItemTap(i)}>
-                    <td>
-                        <img src={this.getIndicatorImage(i)} className="backlog-icon" />
-                    </td>
-                    <td>
-                        <img src={i.assignee.avatar} className="li-avatar rounded mx-auto d-block" />
-                    </td>
-                    <td>
-                        <span className="li-title">{i.title}</span>
-                    </td>
-
-                    <td>
-                        <span>{i.status}</span>
-                    </td>
-
-                    <td>
-                        <span className={'badge ' + this.getPriorityClass(i)}>{i.priority}
-                        </span>
-                    </td>
-                    <td><span className="li-estimate">{i.estimate}</span></td>
-                    <td><span className="li-date">{i.dateCreated.toDateString()}</span></td>
-                </tr>
-            );
-        });
-
+    if (queryResult.isLoading) {
         return (
-            <React.Fragment>
-                <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-                    <h1 className="h2">Backlog</h1>
-                    <div className="btn-toolbar mb-2 mb-md-0">
-                        <AppPresetFilter selectedPreset={this.state.currentPreset} onSelectPresetTap={(p) => this.onSelectPresetTap(p)} />
-
-                        <div className="btn-group mr-2">
-                            <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => this.toggleModal()}>Add</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="table-responsive">
-                    <table className="table table-striped table-sm table-hover">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Assignee</th>
-                                <th>Title</th>
-                                <th>Status</th>
-                                <th>Priority</th>
-                                <th>Estimate</th>
-                                <th>Created</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rows}
-                        </tbody>
-                    </table>
-                </div>
-
-                <Modal isOpen={this.state.showAddModal} toggle={() => this.toggleModal()} className={this.props.className}>
-                    <div className="modal-header">
-                        <h4 className="modal-title" id="modal-basic-title">Add New Item</h4>
-                        <button type="button" className="close" onClick={() => this.toggleModal()} aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <ModalBody>
-                        <form>
-                            <div className="form-group row">
-                                <label className="col-sm-2 col-form-label">Title</label>
-                                <div className="col-sm-10">
-                                    <input className="form-control" defaultValue={this.state.newItem.title} onChange={(e) => this.onFieldChange(e, 'title')} name="title" />
-                                </div>
-                            </div>
-
-                            <div className="form-group row">
-                                <label className="col-sm-2 col-form-label">Description</label>
-                                <div className="col-sm-10">
-                                    <textarea className="form-control" defaultValue={this.state.newItem.description} onChange={(e) => this.onFieldChange(e, 'description')} name="description"></textarea>
-                                </div>
-                            </div>
-
-                            <div className="form-group row">
-                                <label className="col-sm-2 col-form-label">Item Type</label>
-                                <div className="col-sm-10">
-                                    <select className="form-control" defaultValue={this.state.newItem.typeStr} onChange={(e) => this.onFieldChange(e, 'typeStr')} name="itemType">
-                                        {
-                                            this.itemTypesProvider.map(t => {
-                                                return (
-                                                    <option key={t} value={t}>
-                                                        {t}
-                                                    </option>
-                                                )
-                                            })
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-
-                        </form >
-                    </ModalBody >
-                    <ModalFooter>
-                        <Button color="secondary" onClick={() => this.toggleModal()}>Cancel</Button>
-                        <Button color="primary" onClick={() => this.onAddSave()}>Save</Button>{' '}
-
-                    </ModalFooter>
-                </Modal >
-
-
-            </React.Fragment >
-
+            <div>
+                Loading...
+            </div>
         );
     }
+    
+    if (!items) {
+        return (
+            <div>No items</div>
+        );
+    }
+
+
+
+    return (
+        <React.Fragment>
+            <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+                <h1 className="h2">Backlog</h1>
+                <div className="btn-toolbar mb-2 mb-md-0">
+                    <AppPresetFilter selectedPreset={currentPreset} onSelectPresetTap={onSelectPresetTap} />
+
+                    <div className="btn-group mr-2">
+                        <button type="button" className="btn btn-sm btn-outline-secondary" onClick={toggleModal}>Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <BacklogList items={items} />
+
+            <AddItemModal 
+                onNewItemSave={onNewItemSave} 
+                modalShowing={isAddModalShowing}
+                setIsAddModalShowing={setIsAddModalShowing}
+                />
+                
+        </React.Fragment >
+    );
 }
