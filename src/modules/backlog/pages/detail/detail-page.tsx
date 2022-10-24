@@ -26,6 +26,16 @@ const ptUserService: PtUserService = new PtUserService(store);
 type GetPtItemParams = Parameters<typeof backlogService.getPtItem>;
 const queryTag = 'item';
 
+const screenPositionMap: { [key in DetailScreenType | number]: number | DetailScreenType } = {
+    0: 'details',
+    1: 'tasks',
+    2: 'chitchat',
+    'details': 0,
+    'tasks': 1,
+    'chitchat': 2
+};
+
+
 export function DetailPage() {
 
     const currentUser = store.value.currentUser;
