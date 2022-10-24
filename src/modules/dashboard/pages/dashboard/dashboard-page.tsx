@@ -80,7 +80,7 @@ export function DashboardPage() {
                     </h2>
                 </div>
 
-                <div className="btn-toolbar mb-2 mb-md-0">
+                <div className="btn-toolbar mb-2 mb-md-0" style={{gap: 20}}>
                     <div className="btn-group mr-2">
                         <button type="button" className="btn btn-sm btn-outline-secondary" onClick={(e) => onMonthRangeTap(3)}>3 Months</button>
                         <button type="button" className="btn btn-sm btn-outline-secondary" onClick={(e) => onMonthRangeTap(6)}>6 Months</button>
