@@ -1,10 +1,11 @@
-import { DashboardFilter, DashboardRepository } from "../../repositories/dashboard.repository";
+import { useContext, useState } from "react";
+import { useQuery } from "react-query";
+
+import { DashboardFilter } from "../../repositories/dashboard.repository";
 import { formatDateEnUs } from "../../../../core/helpers/date-utils";
 import { ActiveIssuesComponent } from "../../components/active-issues/active-issues";
-import { DashboardService } from "../../services/dashboard.service";
 import { StatusCounts } from "../../models";
-import { useState } from "react";
-import { useQuery } from "react-query";
+import { PtDashboardServiceContext } from "../../../../App";
 
 
 type DateRange = {
@@ -12,12 +13,9 @@ type DateRange = {
     dateEnd: Date;
 };
 
-const dashboardRepo: DashboardRepository = new DashboardRepository();
-const dashboardService: DashboardService = new DashboardService(dashboardRepo);
-
-type GetStatusCountsParamsType= Parameters<typeof dashboardService.getStatusCounts>;
 
 export function DashboardPage() {
+    const dashboardService = useContext(PtDashboardServiceContext);
 
     const [filter, setFilter] = useState<DashboardFilter>({});
 
@@ -25,7 +23,7 @@ export function DashboardPage() {
         return ['items', filter];
     }
 
-    const useStatusCounts = (...params: GetStatusCountsParamsType) => {
+    const useStatusCounts = (...params: Parameters<typeof dashboardService.getStatusCounts>) => {
         return useQuery<StatusCounts, Error>(getQueryKey(), () => dashboardService.getStatusCounts(...params));
     }
     const queryResult = useStatusCounts(filter);
