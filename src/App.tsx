@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import './App.css';
-import '@progress/kendo-theme-bootstrap/dist/all.css';
+
 import { BacklogPage } from './modules/backlog/pages/backlog/backlog-page';
 import { DashboardPage } from './modules/dashboard/pages/dashboard/dashboard-page';
 import { MainMenu } from './shared/components/main-menu/main-menu';
