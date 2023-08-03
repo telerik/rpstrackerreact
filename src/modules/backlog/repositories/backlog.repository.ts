@@ -1,7 +1,6 @@
-import { PtTask, PtItem, PtComment } from '../../../core/models/domain';
+import { PtTask, PtItem, PtComment, PtCommentToBe, PtTaskToBe, PtItemServer, PtTaskServer, PtCommentServer } from '../../../core/models/domain';
 import { CONFIG } from '../../../config';
 import { PresetType } from '../../../core/models/domain/types';
-
 
 export class BacklogRepository {
 
@@ -61,7 +60,7 @@ export class BacklogRepository {
     public getPtItems(
         currentPreset: PresetType,
         currentUserId: number | undefined
-    ): Promise<PtItem[]> {
+    ): Promise<PtItemServer[]> {
         return fetch(this.getFilteredBacklogUrl(currentPreset, currentUserId))
             .then((response: Response) => response.json());
     }
@@ -69,14 +68,14 @@ export class BacklogRepository {
 
     public getPtItem(
         ptItemId: number,
-    ): Promise<PtItem> {
+    ): Promise<PtItemServer> {
         return fetch(this.getPtItemUrl(ptItemId))
             .then((response: Response) => response.json());
     }
 
     public insertPtItem(
         item: PtItem
-    ): Promise<PtItem> {
+    ): Promise<PtItemServer> {
         return fetch(this.postPtItemUrl(),
             {
                 method: 'POST',
@@ -88,7 +87,7 @@ export class BacklogRepository {
 
     public updatePtItem(
         item: PtItem,
-    ): Promise<PtItem> {
+    ): Promise<PtItemServer> {
         return fetch(this.putPtItemUrl(item.id),
             {
                 method: 'PUT',
@@ -98,25 +97,13 @@ export class BacklogRepository {
             .then((response: Response) => response.json());
     }
 
-    /*
-    public deletePtItem(
-        itemId: number,
-        successHandler: () => void
-    ) {
-        this.http.delete(
-            this.deletePtItemUrl(itemId)
-        )
-            .subscribe(successHandler);
-    }
- */
-
     public insertPtTask(
-        task: PtTask,
+        taskToBe: PtTaskToBe,
         ptItemId: number
-    ): Promise<PtTask> {
+    ): Promise<PtTaskServer> {
         return fetch(this.postPtTaskUrl(), {
             method: 'POST',
-            body: JSON.stringify({ task: task, itemId: ptItemId }),
+            body: JSON.stringify({ task: taskToBe, itemId: ptItemId }),
             headers: this.getJSONHeader()
         })
             .then(response => response.json());
@@ -125,7 +112,7 @@ export class BacklogRepository {
     public updatePtTask(
         task: PtTask,
         ptItemId: number
-    ): Promise<PtTask> {
+    ): Promise<PtTaskServer> {
         return fetch(this.putPtTaskUrl(task.id), {
             method: 'PUT',
             body: JSON.stringify({ task: task, itemId: ptItemId }),
@@ -146,27 +133,16 @@ export class BacklogRepository {
 
 
     public insertPtComment(
-        comment: PtComment,
+        commentToBe: PtCommentToBe,
         ptItemId: number
-    ): Promise<PtComment> {
+    ): Promise<PtCommentServer> {
         return fetch(this.postPtCommentUrl(), {
             method: 'POST',
-            body: JSON.stringify({ comment: comment, itemId: ptItemId }),
+            body: JSON.stringify({ comment: commentToBe, itemId: ptItemId }),
             headers: this.getJSONHeader()
         })
             .then(response => response.json());
     }
-
-
-    /*
-       public deletePtComment(
-           ptCommentId: number,
-           successHandler: () => void
-       ) {
-           this.http.delete(this.deletePtCommentUrl(ptCommentId))
-               .subscribe(successHandler);
-       }
-       */
 
     private getJSONHeader() {
         return new Headers({
