@@ -1,6 +1,5 @@
 import { Modal, ModalBody, ModalFooter } from "reactstrap";
-import { PtItem, PtUser } from "../../../../core/models/domain";
-import { PtNewItem } from "../../../../shared/models/dto/pt-new-item";
+import { PtUser } from "../../../../core/models/domain";
 
 export type AssigneeListModalProps = {
     modalIsShowing: boolean;
@@ -30,7 +29,7 @@ export function AssigneeListModal(props: AssigneeListModalProps) {
                                 <li key={u.id} className="list-group-item d-flex justify-content-between align-items-center" onClick={() => selectAssignee(u)}>
                                     <span>{u.fullName}</span>
                                     <span className="badge ">
-                                        <img src={u.avatar} className="li-avatar rounded mx-auto d-block" />
+                                        <img src={u.avatar} className="li-avatar rounded mx-auto d-block" alt="avatar" />
                                     </span>
                                 </li>
                             );
