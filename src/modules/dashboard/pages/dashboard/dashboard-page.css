@@ -1,0 +1,120 @@
+.dashboard-page {
+  /* Root container for the dashboard page */
+}
+
+/* frame13 container with a fixed width */
+.frame13 {
+  width: 700px;
+}
+
+/* Dashboard title styling */
+.dashboard-title {
+  color: #3D3D3D;
+  font-size: 40px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+}
+
+/* Diagram and Statistics container */
+.DiagramAndStatistics {
+  height: 525px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 16px;
+}
+
+/* A general statistics container block with background & padding */
+.StatisticsBlock {
+  align-self: stretch;
+  padding-left: 192px;
+  padding-right: 192px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  background: #FAFAFA;
+  border-radius: 4px;
+  justify-content: space-between;
+  align-items: center;
+  display: inline-flex;
+}
+
+/* frame36 container */
+.frame36 {
+  align-self: stretch;
+  height: 405px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.frame36.stretch-height {
+  height: 405px; /* For the 'Additional Statistics' section */
+}
+
+/* frame38 row container */
+.frame38 {
+  align-self: stretch;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Left and right stat blocks inside frame38 */
+.left-stat-block {
+  width: 218px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.right-stat-block {
+  width: 218px;
+  align-self: stretch;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+/* Chart section placeholder */
+.frame36.chart-section {
+  display: block;
+  width: 100%;
+}
+
+/* Generic styling for text blocks (common patterns) */
+.Label.inline-flex {
+  display: inline-flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.BaseInputLabel.gap-6 {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Headings used inside the statistics blocks */
+.statistics-heading {
+  color: #3D3D3D;
+  font-size: 21px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  line-height: 28px; /* Approx. 27.93px */
+  word-wrap: break-word;
+}
+
+.statistics-subheading {
+  color: #3D3D3D;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  line-height: 24px;
+  word-wrap: break-word;
+}
