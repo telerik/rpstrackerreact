@@ -5,14 +5,14 @@ import { ItemType, PT_ITEM_STATUSES, PT_ITEM_PRIORITIES } from "../../../../core
 import { Observable } from "rxjs";
 import { AssigneeListModal } from "../assignee-list-modal/assignee-list-modal";
 
-interface PtItemDetailsComponentProps {
+interface PtItemFormComponentProps {
     item: PtItem;
     itemSaved: (item: PtItem) => void;
     usersRequested: () => void;
     users$: Observable<PtUser[]>;
 }
 
-export function PtItemDetailsComponent(props: PtItemDetailsComponentProps) {
+export function PtItemFormComponent(props: PtItemFormComponentProps) {
 
     const statusesProvider = PT_ITEM_STATUSES;
     const prioritiesProvider = PT_ITEM_PRIORITIES;
@@ -22,11 +22,11 @@ export function PtItemDetailsComponent(props: PtItemDetailsComponentProps) {
     const [users, setUsers] = useState<PtUser[]>([]);
     const [modalIsShowing, setModalIsShowing] = useState(false);
     const [selectedAssignee, setSelectedAssignee] = useState<PtUser>(props.item.assignee);
+
     useEffect(()=>{
         notifyUpdateItem();
     }, [selectedAssignee]);
 
-    
     function onFieldChange(e: any, formFieldName: string) {
         if (!itemForm) {
             return;
@@ -173,14 +173,11 @@ export function PtItemDetailsComponent(props: PtItemDetailsComponentProps) {
                 </div>
             </form>
 
-            <AssigneeListModal 
-                users={users} 
-                modalIsShowing={modalIsShowing} 
-                setModalIsShowing={setModalIsShowing} 
+            <AssigneeListModal
+                users={users}
+                modalIsShowing={modalIsShowing}
+                setModalIsShowing={setModalIsShowing}
                 selectAssignee={selectAssignee} />
-
-
         </React.Fragment>
     );
-   
 }

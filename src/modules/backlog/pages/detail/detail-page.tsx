@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 
 import { PtItem, PtUser, PtTask } from "../../../../core/models/domain";
 import { DetailScreenType } from "../../../../shared/models/ui/types/detail-screens";
-import { PtItemDetailsComponent } from "../../components/item-details/pt-item-details";
+import { PtItemFormComponent } from "../../components/item-form/pt-item-form";
 import { PtItemTasksComponent } from "../../components/item-tasks/pt-item-tasks";
 import { PtNewTask } from "../../../../shared/models/dto/pt-new-task";
 import { PtTaskTitleUpdate } from "../../../../shared/models/dto/pt-task-update";
@@ -19,10 +19,10 @@ import { PtBacklogServiceContext, PtStoreContext, PtUserServiceContext } from ".
 const queryTag = 'item';
 
 const screenPositionMap: { [key in DetailScreenType | number]: number | DetailScreenType } = {
-    0: 'details',
+    0: 'form',
     1: 'tasks',
     2: 'chitchat',
-    'details': 0,
+    'form': 0,
     'tasks': 1,
     'chitchat': 2
 };
@@ -48,7 +48,7 @@ export function DetailPage() {
     const queryResult = useItem(parseInt(itemId));
     const item = queryResult.data;
 
-    const [selectedDetailsScreen, setSelectedDetailsScreen] = useState<DetailScreenType>(screen ? screen : 'details');
+    const [selectedDetailsScreen, setSelectedDetailsScreen] = useState<DetailScreenType>(screen ? screen : 'form');
 
     const updateItemMutation = useMutation(async (itemToUpdate: PtItem) => {
         const updatedItem = await backlogService.updatePtItem(itemToUpdate);
@@ -99,8 +99,8 @@ export function DetailPage() {
 
     function screenRender(screen: DetailScreenType, item: PtItem) {
         switch (screen) {
-            case 'details':
-                return <PtItemDetailsComponent 
+            case 'form':
+                return <PtItemFormComponent
                     item={item} 
                     users$={users$} 
                     usersRequested={onUsersRequested} 
@@ -121,13 +121,13 @@ export function DetailPage() {
                 />;
 
             default:
-                return <PtItemDetailsComponent item={item} users$={users$} usersRequested={() => onUsersRequested()} itemSaved={(item) => onItemSaved(item)} />;
+                return <PtItemFormComponent item={item} users$={users$} usersRequested={() => onUsersRequested()} itemSaved={(item) => onItemSaved(item)} />;
         }
     }
 
     if (!screen) {
         return (
-            <Navigate replace to={`/detail/${itemId}/details`}/>
+            <Navigate replace to={`/detail/${itemId}/form`}/>
         );
     }
     
@@ -155,10 +155,10 @@ export function DetailPage() {
                                 <div className="btn-group me-2">
                                     <button
                                         type="button"
-                                        onClick={(e) => onScreenSelected('details')}
-                                        className={"btn btn-sm btn-outline-secondary " + (selectedDetailsScreen === 'details' ? 'active' : '')}
+                                        onClick={(e) => onScreenSelected('form')}
+                                        className={"btn btn-sm btn-outline-secondary " + (selectedDetailsScreen === 'form' ? 'active' : '')}
                                     >
-                                        Details
+                                        Form
                                     </button>
                                     
                                     <button
