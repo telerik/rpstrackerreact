@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { PtTask } from "../../../../core/models/domain";
 
 export type PtTaskDisplayComponentProps = {
@@ -13,12 +13,13 @@ export type PtTaskDisplayComponentProps = {
 export function PtTaskDisplayComponent(props: PtTaskDisplayComponentProps) {
     const { task, onToggleTaskCompletion, onDeleteTask } = props;
 
-    function taskTitleChange(event: React.ChangeEvent<HTMLInputElement>) {
-        if (task.title === event.target.value) {
-            return;
-        }
-        props.taskTitleChange(task, event.target.value);
-    }
+    // Local state for text so user sees typed changes right away
+    const [titleLocal, setTitleLocal] = useState(task.title);
+
+    // If the prop's title changes (e.g., new tasks from server), update local
+    useEffect(() => {
+        setTitleLocal(task.title);
+    }, [task.title]);
 
     function toggleTapped() {
         onToggleTaskCompletion(task);
@@ -29,11 +30,22 @@ export function PtTaskDisplayComponent(props: PtTaskDisplayComponentProps) {
     }
 
     function onFocused() {
+        // Pass up to parent, in case it does something
         props.onTaskFocused(task);
+        // Also ensure local state matches current title
+        setTitleLocal(task.title);
     }
 
     function onBlurred() {
+        // If the user changed text, call parent's 'taskTitleChange' and then 'onTaskBlurred'
+        if (titleLocal !== task.title) {
+            props.taskTitleChange(task, titleLocal || "");
+        }
         props.onTaskBlurred(task);
+    }
+
+    function onTitleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+        setTitleLocal(e.target.value);
     }
 
     return (
@@ -50,8 +62,8 @@ export function PtTaskDisplayComponent(props: PtTaskDisplayComponentProps) {
                         />
                     </div>
                     <input
-                        value={task.title}
-                        onChange={taskTitleChange}
+                        value={titleLocal}
+                        onChange={onTitleInputChange}
                         onFocus={onFocused}
                         onBlur={onBlurred}
                         type="text"
@@ -105,7 +117,9 @@ export function PtTaskDisplayComponent(props: PtTaskDisplayComponentProps) {
                                     style={{ color: "red", cursor: "pointer", width: "16px" }}
                                     onClick={deleteTapped}
                                 >
-                                    <svg  viewBox="0 0 512 512"><path d="M416 96h-96V64c0-17.6-14.4-32-32-32h-96c-17.6 0-32 14.4-32 32v32H64v64h32v288c0 17.6 14.4 32 32 32h224c17.6 0 32-14.4 32-32V160h32zM192 64h95.9l.1.1V96h-96c.1-.1.1-32.1 0-32m160 384H128.1l-.1-.1V160h32v256h32V160h32v256h32V160h32v256h32V160h32z"></path></svg>
+                                    <svg viewBox="0 0 512 512">
+                                        <path d="M416 96h-96V64c0-17.6-14.4-32-32-32h-96c-17.6 0-32 14.4-32 32v32H64v64h32v288c0 17.6 14.4 32 32 32h224c17.6 0 32-14.4 32-32V160h32zM192 64h95.9l.1.1V96h-96c.1-.1.1-32.1 0-32m160 384H128.1l-.1-.1V160h32v256h32V160h32v256h32V160h32v256h32V160h32z" />
+                                    </svg>
                                 </span>
                             </div>
                         </div>
