@@ -142,15 +142,43 @@ export function DetailPage() {
     return (
 
         <div>
-            <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-                <h1 className="h2">{item.title}</h1>
-                <div className="btn-toolbar mb-2 mb-md-0">
-                    <div className="btn-group mr-2">
-                        <button type="button" onClick={(e) => onScreenSelected('details')} className={'btn btn-sm btn-outline-secondary ' + selectedDetailsScreen === 'details' ? 'active' : ''}>Details</button>
-
-                        <button type="button" onClick={(e) => onScreenSelected('tasks')} className={"btn btn-sm btn-outline-secondary " + selectedDetailsScreen === 'tasks' ? 'active' : ''}>Tasks</button>
-
-                        <button type="button" onClick={(e) => onScreenSelected('chitchat')} className={"btn btn-sm btn-outline-secondary " + selectedDetailsScreen === 'chitchat' ? 'active' : ''}>Chitchat</button>
+            <div className="container">
+                <div className="row align-items-center justify-content-between">
+                    <div className="col-auto">
+                        <div className="frame13 d-flex flex-column align-items-start gap-2">
+                            <div className="dashboard-title text-center">{item.title}</div>
+                        </div>
+                    </div>
+                    <div className="col-auto">
+                        <div className="Tools d-flex gap-3">
+                            <div className="btn-toolbar mb-2 mb-md-0">
+                                <div className="btn-group me-2">
+                                    <button
+                                        type="button"
+                                        onClick={(e) => onScreenSelected('details')}
+                                        className={"btn btn-sm btn-outline-secondary " + (selectedDetailsScreen === 'details' ? 'active' : '')}
+                                    >
+                                        Details
+                                    </button>
+                                    
+                                    <button
+                                        type="button"
+                                        onClick={(e) => onScreenSelected('tasks')}
+                                        className={"btn btn-sm btn-outline-secondary " + (selectedDetailsScreen === 'tasks' ? 'active' : '')}
+                                    >
+                                        Tasks
+                                    </button>
+                                    
+                                    <button
+                                        type="button"
+                                        onClick={(e) => onScreenSelected('chitchat')}
+                                        className={"btn btn-sm btn-outline-secondary " + (selectedDetailsScreen === 'chitchat' ? 'active' : '')}
+                                    >
+                                        Chitchat
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
