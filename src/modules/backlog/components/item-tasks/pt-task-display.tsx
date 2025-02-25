@@ -1,3 +1,4 @@
+import React from "react";
 import { PtTask } from "../../../../core/models/domain";
 
 export type PtTaskDisplayComponentProps = {
@@ -10,10 +11,9 @@ export type PtTaskDisplayComponentProps = {
 };
 
 export function PtTaskDisplayComponent(props: PtTaskDisplayComponentProps) {
+    const { task, onToggleTaskCompletion, onDeleteTask } = props;
 
-    const { task, onToggleTaskCompletion, onDeleteTask  } = props;
-
-    function taskTitleChange(event: any) {
+    function taskTitleChange(event: React.ChangeEvent<HTMLInputElement>) {
         if (task.title === event.target.value) {
             return;
         }
@@ -27,7 +27,7 @@ export function PtTaskDisplayComponent(props: PtTaskDisplayComponentProps) {
     function deleteTapped() {
         onDeleteTask(task);
     }
-    
+
     function onFocused() {
         props.onTaskFocused(task);
     }
@@ -37,18 +37,80 @@ export function PtTaskDisplayComponent(props: PtTaskDisplayComponentProps) {
     }
 
     return (
-        <div key={task.id} className="input-group mb-3 col-sm-12">
-            <div className="input-group-prepend">
-                <div className="input-group-text">
-                    <input type="checkbox" checked={task.completed} onChange={toggleTapped} aria-label="Checkbox for following text input"
-                        name={'checked' + task.id} />
+        <div className="row mb-3">
+            <div className="col">
+                <div className="input-group">
+                    <div className="input-group-text">
+                        <input
+                            type="checkbox"
+                            checked={task.completed}
+                            onChange={toggleTapped}
+                            aria-label="Checkbox for following text input"
+                            name={"checked" + task.id}
+                        />
+                    </div>
+                    <input
+                        value={task.title}
+                        onChange={taskTitleChange}
+                        onFocus={onFocused}
+                        onBlur={onBlurred}
+                        type="text"
+                        className="form-control"
+                        aria-label="Text input with checkbox"
+                        name={"tasktitle" + task.id}
+                    />
                 </div>
             </div>
-            <input defaultValue={task.title} onChange={taskTitleChange} onFocus={onFocused} onBlur={onBlurred}
-                type="text" className="form-control" aria-label="Text input with checkbox" name={'tasktitle' + task.id} />
-
-            <div className="input-group-append">
-                <button className="btn btn-danger" type="button" onClick={deleteTapped}>Delete</button>
+            <div className="col-1">
+                <div
+                    style={{
+                        borderRadius: "6px",
+                        justifyContent: "flex-start",
+                        alignItems: "flex-start",
+                        display: "flex"
+                    }}
+                >
+                    <div
+                        style={{
+                            padding: "10px",
+                            borderRadius: "8px",
+                            border: "1px rgba(255, 255, 255, 0) solid",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "8px",
+                            display: "flex"
+                        }}
+                    >
+                        <div
+                            style={{
+                                width: "16px",
+                                height: "16px",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                display: "flex"
+                            }}
+                        >
+                            <div
+                                style={{
+                                    width: "16px",
+                                    height: "16px",
+                                    position: "relative",
+                                    flexDirection: "column",
+                                    justifyContent: "flex-start",
+                                    alignItems: "flex-start",
+                                    display: "flex"
+                                }}
+                            >
+                                <span
+                                    style={{ color: "red", cursor: "pointer", width: "16px" }}
+                                    onClick={deleteTapped}
+                                >
+                                    <svg  viewBox="0 0 512 512"><path d="M416 96h-96V64c0-17.6-14.4-32-32-32h-96c-17.6 0-32 14.4-32 32v32H64v64h32v288c0 17.6 14.4 32 32 32h224c17.6 0 32-14.4 32-32V160h32zM192 64h95.9l.1.1V96h-96c.1-.1.1-32.1 0-32m160 384H128.1l-.1-.1V160h32v256h32V160h32v256h32V160h32v256h32V160h32z"></path></svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

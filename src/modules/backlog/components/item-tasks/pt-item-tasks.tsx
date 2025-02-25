@@ -3,9 +3,9 @@ import { PtTask } from "../../../../core/models/domain";
 import { EMPTY_STRING } from "../../../../core/helpers";
 import { PtTaskTitleUpdate } from "../../../../shared/models/dto/pt-task-update";
 import { PtNewTask } from "../../../../shared/models/dto/pt-new-task";
-import { PtTaskDisplayComponent } from "./pt-task-display";
 import { UseMutationResult } from "react-query";
 import { NewTaskForm } from "./new-task-form";
+import { PtTaskDisplayComponent } from "./pt-task-display";
 
 export type PtItemTasksComponentProps = {
     tasks: PtTask[];
@@ -41,18 +41,15 @@ export function PtItemTasksComponent(props: PtItemTasksComponentProps) {
         });
     };
 
-
     function toggleTapped(task: PtTask) {
         const index = tasks.findIndex(t => t.id === task.id);
         toggleTaskCompletion(index);
     }
 
-
     function taskTitleChange(task: PtTask, newTitle: string) {
         if (task.title === newTitle) {
             return;
         }
-        
         setLastUpdatedTitle(newTitle);
     }
 
@@ -66,7 +63,7 @@ export function PtItemTasksComponent(props: PtItemTasksComponentProps) {
             task: task,
             newTitle: lastUpdatedTitle
         };
-        
+
         props.updateTaskMutation.mutate(taskUpdate, {
             onSuccess(updatedTask) {
                 const newTasks = [...tasks];
@@ -81,7 +78,6 @@ export function PtItemTasksComponent(props: PtItemTasksComponentProps) {
             return;
         }
         updateTask(task);
-
         setLastUpdatedTitle(EMPTY_STRING);
     }
 
@@ -90,9 +86,9 @@ export function PtItemTasksComponent(props: PtItemTasksComponentProps) {
         props.deleteTaskMutation.mutate(theTask!, {
             onSuccess(deleted) {
                 if (deleted) {
-                    const newChatEntries = [...tasks];
-                    newChatEntries.splice(index, 1);
-                    setTasks(newChatEntries);
+                    const newTasks = [...tasks];
+                    newTasks.splice(index, 1);
+                    setTasks(newTasks);
                 }
             },
         });
@@ -104,27 +100,68 @@ export function PtItemTasksComponent(props: PtItemTasksComponentProps) {
     }
 
     return (
-        <div>
-            <NewTaskForm addTask={addTask} />
+        <div
+            style={{
+                width: "1160px",
+                paddingLeft: "16px",
+                paddingRight: "16px",
+                paddingTop: "24px",
+                paddingBottom: "24px",
+                background: "white",
+                borderTopLeftRadius: "4px",
+                borderTopRightRadius: "4px",
+                border: "1px rgba(33, 37, 41, 0.13) solid",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                display: "inline-flex"
+            }}
+        >
+            <div
+                style={{
+                    alignSelf: "stretch",
+                    width: "550px",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    alignItems: "normal",
+                    gap: "16px",
+                    display: "flex"
+                }}
+            >
+                <NewTaskForm addTask={addTask} />
 
-            <hr />
+                <div
+                    style={{
+                        width: "1126px",
+                        height: "1px",
+                        paddingRight: "2.81px",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "inline-flex"
+                    }}
+                >
+                    <div
+                        style={{
+                            width: "1123.19px",
+                            height: "1px",
+                            position: "relative",
+                            background: "rgba(33, 37, 41, 0.13)"
+                        }}
+                    />
+                </div>
 
-            {
-                tasks.map(task => {
-                    return (
-                        <PtTaskDisplayComponent 
-                            key={task.id}
-                            task={task} 
-                            onToggleTaskCompletion={toggleTapped} 
-                            onDeleteTask={deleteTapped}
-                            onTaskFocused={onTaskFocused}
-                            onTaskBlurred={onTaskBlurred}
-                            taskTitleChange={taskTitleChange}
-                            />
-                    );
-                })
-            }
+                {tasks.map((task) => (
+                    <PtTaskDisplayComponent
+                        key={task.id}
+                        task={task}
+                        onToggleTaskCompletion={toggleTapped}
+                        onDeleteTask={deleteTapped}
+                        onTaskFocused={onTaskFocused}
+                        onTaskBlurred={onTaskBlurred}
+                        taskTitleChange={taskTitleChange}
+                    />
+                ))}
+            </div>
         </div>
     );
-    
 }
