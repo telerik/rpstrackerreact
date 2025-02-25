@@ -15,12 +15,12 @@ export function AssigneeListModal(props: AssigneeListModalProps) {
 
     return (
         <Modal isOpen={modalIsShowing}>
+
             <div className="modal-header">
                 <h4 className="modal-title" id="modal-basic-title">Select Assignee</h4>
-                <button type="button" className="close" onClick={() => setModalIsShowing(false)} aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => setModalIsShowing(false)} ></button>
             </div>
+
             <ModalBody>
                 <ul className="list-group list-group-flush">
                     {
