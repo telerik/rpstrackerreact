@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { Observable } from "rxjs";
 
@@ -18,16 +18,6 @@ import { PtBacklogServiceContext, PtStoreContext, PtUserServiceContext } from ".
 
 const queryTag = 'item';
 
-const screenPositionMap: { [key in DetailScreenType | number]: number | DetailScreenType } = {
-    0: 'form',
-    1: 'tasks',
-    2: 'chitchat',
-    'form': 0,
-    'tasks': 1,
-    'chitchat': 2
-};
-
-
 export function DetailPage() {
 
     const store = useContext(PtStoreContext);
@@ -37,19 +27,25 @@ export function DetailPage() {
     const currentUser = store.value.currentUser;
     const users$: Observable<PtUser[]> = store.select<PtUser[]>('users');
 
-    const { id: itemId, screen } = useParams() as { id: string, screen: DetailScreenType };
+    const { id: itemId } = useParams() as { id: string };
 
-    const queryClient = useQueryClient();
+    const location = useLocation();
     const navigate = useNavigate();
-
     const useItem = (...params: Parameters<typeof backlogService.getPtItem>) => {
         return useQuery<PtItem, Error>(queryTag, () => backlogService.getPtItem(...params));
-    }
+    };
     const queryResult = useItem(parseInt(itemId));
     const item = queryResult.data;
 
-    const [selectedDetailsScreen, setSelectedDetailsScreen] = useState<DetailScreenType>(screen ? screen : 'form');
+    let selectedDetailsScreen: DetailScreenType = 'form';
+    if (location.pathname.endsWith('/tasks')) {
+        selectedDetailsScreen = 'tasks';
+    } else if (location.pathname.endsWith('/chitchat')) {
+        selectedDetailsScreen = 'chitchat';
+    }
 
+    const queryClient = useQueryClient();
+    
     const updateItemMutation = useMutation(async (itemToUpdate: PtItem) => {
         const updatedItem = await backlogService.updatePtItem(itemToUpdate);
         return updatedItem;
@@ -81,13 +77,17 @@ export function DetailPage() {
     });
 
     function onScreenSelected(screen: DetailScreenType) {
-        setSelectedDetailsScreen(screen);
-        navigate(`/detail/${itemId}/${screen}`);
+        if (screen === 'form') {
+            navigate(`/detail/${itemId}`);
+        } else {
+            navigate(`/detail/${itemId}/${screen}`);
+        }
     }
 
     function onItemSaved(item: PtItem) {
         updateItemMutation.mutate(item, {
             onSuccess: (updatedItem) => {
+                //useQueryClient().setQueryData(queryTag, updatedItem);
                 queryClient.setQueryData(queryTag, updatedItem);
             }
         });
@@ -125,11 +125,7 @@ export function DetailPage() {
         }
     }
 
-    if (!screen) {
-        return (
-            <Navigate replace to={`/detail/${itemId}/form`}/>
-        );
-    }
+    
     
     if (queryResult.isLoading) {
         return <div>Loading...</div>

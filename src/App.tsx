@@ -100,11 +100,19 @@ function App() {
                   } />
                   <Route path="backlog" element={<Navigate replace to="/backlog/open" />}/>
 
-                  <Route path="/detail/:id" element={<DetailPage/>} />
-
-                  <Route path="/detail/:id/:screen" element={
+                  <Route path="/detail/:id" element={
                     <PtBacklogServiceContext.Provider value={backlogService}>
-                        <DetailPage/>
+                      <DetailPage/>
+                    </PtBacklogServiceContext.Provider>
+                  } />
+                  <Route path="/detail/:id/tasks" element={
+                    <PtBacklogServiceContext.Provider value={backlogService}>
+                      <DetailPage/>
+                    </PtBacklogServiceContext.Provider>
+                  } />
+                  <Route path="/detail/:id/chitchat" element={
+                    <PtBacklogServiceContext.Provider value={backlogService}>
+                      <DetailPage/>
                     </PtBacklogServiceContext.Provider>
                   } />
                 </Routes>
