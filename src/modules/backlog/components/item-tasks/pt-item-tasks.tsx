@@ -47,6 +47,7 @@ export function PtItemTasksComponent(props: PtItemTasksComponentProps) {
     }
 
     function taskTitleChange(task: PtTask, newTitle: string) {
+        debugger;
         if (task.title === newTitle) {
             return;
         }
@@ -57,11 +58,11 @@ export function PtItemTasksComponent(props: PtItemTasksComponentProps) {
         setLastUpdatedTitle(task.title ? task.title : EMPTY_STRING);
     }
 
-    function updateTask(task: PtTask) {
+    function updateTask(task: PtTask, newTitle: string) {
         const index = tasks.findIndex(t => t.id === task.id);
         const taskUpdate: PtTaskTitleUpdate = {
             task: task,
-            newTitle: lastUpdatedTitle
+            newTitle: newTitle
         };
 
         props.updateTaskMutation.mutate(taskUpdate, {
@@ -73,11 +74,11 @@ export function PtItemTasksComponent(props: PtItemTasksComponentProps) {
         });
     }
 
-    function onTaskBlurred(task: PtTask) {
-        if (task.title === lastUpdatedTitle) {
+    function onTaskBlurred(task: PtTask, newTitle: string) {
+        if (task.title === newTitle) {
             return;
         }
-        updateTask(task);
+        updateTask(task, newTitle);
         setLastUpdatedTitle(EMPTY_STRING);
     }
 

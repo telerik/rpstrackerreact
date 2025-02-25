@@ -6,7 +6,7 @@ export type PtTaskDisplayComponentProps = {
     onToggleTaskCompletion: (task: PtTask) => void;
     onDeleteTask: (task: PtTask) => void;
     onTaskFocused: (task: PtTask) => void;
-    onTaskBlurred: (task: PtTask) => void;
+    onTaskBlurred: (task: PtTask, newTitle: string) => void;
     taskTitleChange: (task: PtTask, newTitle: string) => void;
 };
 
@@ -37,11 +37,12 @@ export function PtTaskDisplayComponent(props: PtTaskDisplayComponentProps) {
     }
 
     function onBlurred() {
+        debugger;
         // If the user changed text, call parent's 'taskTitleChange' and then 'onTaskBlurred'
         if (titleLocal !== task.title) {
             props.taskTitleChange(task, titleLocal || "");
         }
-        props.onTaskBlurred(task);
+        props.onTaskBlurred(task, titleLocal || "");
     }
 
     function onTitleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
