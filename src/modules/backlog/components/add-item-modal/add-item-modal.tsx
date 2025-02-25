@@ -43,11 +43,10 @@ export function AddItemModal(props: AddItemModalProps) {
     return (
         <Modal isOpen={modalShowing}>
             <div className="modal-header">
-                <h4 className="modal-title" id="modal-basic-title">Add New Item</h4>
-                <button type="button" className="close" onClick={()=>setShowModal(false)} aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h4 id="modal-basic-title" className="modal-title">Add New Item</h4>
+                <button type="button" data-bs-dismiss="modal" onClick={()=>setShowModal(false)} aria-label="Close" className="btn-close"></button>
             </div>
+
             <ModalBody>
                 <form>
                     <div className="form-group row">
