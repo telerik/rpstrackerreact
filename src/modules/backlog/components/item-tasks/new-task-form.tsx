@@ -9,7 +9,7 @@ export function NewTaskForm(props: TaskFormProps) {
 
     const [newTaskTitle, setNewTaskTitle] = useState<string>(EMPTY_STRING);
 
-    function onNewTaskTitleChanged(e: React.ChangeEvent<HTMLInputElement>) {
+    function onNewTaskTitleChanged(e: any) {
         setNewTaskTitle(e.target.value);
     }
 
@@ -22,7 +22,7 @@ export function NewTaskForm(props: TaskFormProps) {
         setNewTaskTitle(EMPTY_STRING);
     }
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
         onAddTapped();
     };

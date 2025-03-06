@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { Observable } from "rxjs";
+
 import { PtItem, PtUser } from "../../../../core/models/domain";
 import { PtItemDetailsEditFormModel, ptItemToFormModel } from "../../../../shared/models/forms/pt-item-details-edit-form";
 import { ItemType, PT_ITEM_STATUSES, PT_ITEM_PRIORITIES } from "../../../../core/constants";
-import { Observable } from "rxjs";
 import { AssigneeListModal } from "../assignee-list-modal/assignee-list-modal";
+import { getIndicatorClass } from "../../../../shared/helpers/priority-styling";
 
 interface PtItemFormComponentProps {
     item: PtItem;
@@ -71,7 +73,6 @@ export function PtItemFormComponent(props: PtItemFormComponentProps) {
                 setModalIsShowing(true);
             }
         });
-
         props.usersRequested();
     }
 
@@ -163,11 +164,9 @@ export function PtItemFormComponent(props: PtItemFormComponentProps) {
 
                 <div className="form-group row">
                     <label className="col-sm-2 col-form-label">Assignee</label>
-
                     <div className="col-sm-10">
                         <img src={selectedAssignee!.avatar} className="li-avatar rounded" />
                         <span>{itemForm.assigneeName}</span>
-
                         <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => assigneePickerOpen()}>Pick assignee</button>
                     </div>
                 </div>

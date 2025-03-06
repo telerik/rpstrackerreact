@@ -11,12 +11,11 @@ export type PtTaskDisplayComponentProps = {
 };
 
 export function PtTaskDisplayComponent(props: PtTaskDisplayComponentProps) {
+    
     const { task, onToggleTaskCompletion, onDeleteTask } = props;
 
-    // Local state for text so user sees typed changes right away
     const [titleLocal, setTitleLocal] = useState(task.title);
 
-    // If the prop's title changes (e.g., new tasks from server), update local
     useEffect(() => {
         setTitleLocal(task.title);
     }, [task.title]);
@@ -30,9 +29,7 @@ export function PtTaskDisplayComponent(props: PtTaskDisplayComponentProps) {
     }
 
     function onFocused() {
-        // Pass up to parent, in case it does something
         props.onTaskFocused(task);
-        // Also ensure local state matches current title
         setTitleLocal(task.title);
     }
 
@@ -49,7 +46,7 @@ export function PtTaskDisplayComponent(props: PtTaskDisplayComponentProps) {
     }
 
     return (
-        <div className="row mb-3">
+        <div key={task.id} className="row mb-3">
             <div className="col">
                 <div className="input-group">
                     <div className="input-group-text">

@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { UseMutationResult } from "react-query";
+
 import { PtTask } from "../../../../core/models/domain";
 import { EMPTY_STRING } from "../../../../core/helpers";
 import { PtTaskTitleUpdate } from "../../../../shared/models/dto/pt-task-update";
 import { PtNewTask } from "../../../../shared/models/dto/pt-new-task";
-import { UseMutationResult } from "react-query";
 import { NewTaskForm } from "./new-task-form";
 import { PtTaskDisplayComponent } from "./pt-task-display";
 
