@@ -1,13 +1,20 @@
-import { useContext, useState } from "react";
-import { useQuery } from "react-query";
+import { cloneElement, useContext, useState } from "react";
+import { useQueries } from "react-query";
+import { Observable } from "rxjs";
+import "./dashboard-page.css";
 
-import "./dashboard-page.css"; // <-- New stylesheet import
-
-import { DashboardFilter } from "../../repositories/dashboard.repository";
-import { formatDateEnUs } from "../../../../core/helpers/date-utils";
+import {
+  DashboardFilter,
+  FilteredIssues,
+} from "../../repositories/dashboard.repository";
 import { ActiveIssuesComponent } from "../../components/active-issues/active-issues";
 import { StatusCounts } from "../../models";
-import { PtDashboardServiceContext } from "../../../../App";
+import { PtUser } from "../../../../core/models/domain";
+import {
+  PtDashboardServiceContext,
+  PtStoreContext,
+  PtUserServiceContext,
+} from "../../../../App";
 
 type DateRange = {
   dateStart: Date;
@@ -15,24 +22,35 @@ type DateRange = {
 };
 
 export function DashboardPage() {
+  const store = useContext(PtStoreContext);
+  const userService = useContext(PtUserServiceContext);
   const dashboardService = useContext(PtDashboardServiceContext);
 
   const [filter, setFilter] = useState<DashboardFilter>({});
 
-  function getQueryKey() {
-    return ["items", filter];
+  const users$: Observable<PtUser[]> = store.select<PtUser[]>("users");
+  const [users, setUsers] = useState<PtUser[]>([]);
+
+  function getQueryKey(keybase: string) {
+    return [keybase, filter];
   }
 
-  const useStatusCounts = (
-    ...params: Parameters<typeof dashboardService.getStatusCounts>
-  ) => {
-    return useQuery<StatusCounts, Error>(
-      getQueryKey(),
-      () => dashboardService.getStatusCounts(...params)
-    );
+  const useDashboardData = (filter: DashboardFilter) => {
+    return useQueries<[StatusCounts, FilteredIssues]>([
+      {
+        queryKey: getQueryKey("items"),
+        queryFn: () => dashboardService.getStatusCounts(filter),
+      },
+      {
+        queryKey: getQueryKey("issues"),
+        queryFn: () => dashboardService.getFilteredIssues(filter),
+      },
+    ]);
   };
-  const queryResult = useStatusCounts(filter);
-  const statusCounts = queryResult.data;
+
+  const queryResults = useDashboardData(filter);
+  const queryResult0 = queryResults[0];
+  const statusCounts = queryResult0.data as StatusCounts;
 
   function onMonthRangeTap(months: number) {
     const range = getDateRange(months);
@@ -53,7 +71,7 @@ export function DashboardPage() {
     };
   }
 
-  if (queryResult.isLoading) {
+  if (queryResult0.isLoading) {
     return <div>Loading...</div>;
   }
 
@@ -63,21 +81,19 @@ export function DashboardPage() {
 
   return (
     <div className="dashboard-page">
-      {/* Header Section */}
+
       <div className="container">
         <div className="row align-items-center justify-content-between">
-          {/* Left: Dashboard Title */}
           <div className="col-auto">
             <div className="frame13 d-flex flex-column align-items-start gap-2">
               <div className="dashboard-title text-center">Dashboard</div>
             </div>
           </div>
 
-          {/* Right: Month Range Buttons */}
           <div className="col-auto">
             <div className="Tools d-flex gap-3">
               <div className="btn-toolbar mb-2 mb-md-0">
-                <div className="btn-group me-2">
+                <div className="btn-group mr-2">
                   <button type="button" onClick={() => onMonthRangeTap(3)}>
                     3 Months
                   </button>
@@ -108,16 +124,12 @@ export function DashboardPage() {
             <div className="Statistics left-stat-block">
               <div className="Label inline-flex">
                 <div className="BaseInputLabel gap-6">
-                  <div className="statistics-heading">
-                    All Issues
-                  </div>
+                <div className="statistics-heading">All Issues</div>
                 </div>
               </div>
               <div className="Label inline-flex">
                 <div className="BaseInputLabel gap-6">
-                  <div className="statistics-subheading">
-                    Active Issues
-                  </div>
+                <div className="statistics-subheading">Active Issues</div>
                 </div>
               </div>
             </div>
@@ -142,7 +154,6 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* Chart Section (Placeholder) */}
         <div className="frame36 chart-section">
           {/* Insert your chart component or markup here */}
         </div>
