@@ -47,7 +47,6 @@ export function PtItemTasksComponent(props: PtItemTasksComponentProps) {
     }
 
     function taskTitleChange(task: PtTask, newTitle: string) {
-        debugger;
         if (task.title === newTitle) {
             return;
         }

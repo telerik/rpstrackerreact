@@ -37,7 +37,6 @@ export function PtTaskDisplayComponent(props: PtTaskDisplayComponentProps) {
     }
 
     function onBlurred() {
-        debugger;
         // If the user changed text, call parent's 'taskTitleChange' and then 'onTaskBlurred'
         if (titleLocal !== task.title) {
             props.taskTitleChange(task, titleLocal || "");
