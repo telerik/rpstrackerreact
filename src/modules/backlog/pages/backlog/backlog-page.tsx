@@ -83,7 +83,9 @@ export function BacklogPage() {
                             <div className="btn-toolbar mb-2 mb-md-0">
                                 <div className="btn-group me-2">
                                     <AppPresetFilter selectedPreset={currentPreset} onSelectPresetTap={onSelectPresetTap} />
-                                    <button type="button" className="btn btn-sm btn-outline-secondary" onClick={toggleModal}>Add</button>
+                                    <button type="button" className="btn btn-sm btn-outline-secondary" onClick={toggleModal}>
+                                        Add
+                                    </button>
                                 </div>
                             </div>
                         </div>
