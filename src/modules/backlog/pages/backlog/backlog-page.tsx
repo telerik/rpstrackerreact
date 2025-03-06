@@ -9,8 +9,8 @@ import { AppPresetFilter } from "../../../../shared/components/preset-filter/pre
 import { PtNewItem } from "../../../../shared/models/dto/pt-new-item";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { AddItemModal } from "../../components/add-item-modal/add-item-modal";
-import { BacklogList } from "../../components/backlog-list/backlog-list";
 import { PtBacklogServiceContext, PtStoreContext } from "../../../../App";
+import { BacklogList } from "../../components/backlog-list/backlog-list";
 
 export function BacklogPage() {
     const store = useContext(PtStoreContext);
