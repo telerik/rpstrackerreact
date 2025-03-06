@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import './backlog-page.css';
+import "./backlog-page.css";
 
 import { PresetType } from "../../../../core/models/domain/types";
 import { PtItem } from "../../../../core/models/domain";
@@ -12,28 +12,25 @@ import { AddItemModal } from "../../components/add-item-modal/add-item-modal";
 import { BacklogList } from "../../components/backlog-list/backlog-list";
 import { PtBacklogServiceContext, PtStoreContext } from "../../../../App";
 
-
 export function BacklogPage() {
     const store = useContext(PtStoreContext);
     const backlogService = useContext(PtBacklogServiceContext);
 
-    
-
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     
-    const { preset } = useParams() as {preset: PresetType};
+    const { preset } = useParams() as { preset: PresetType };
     const [currentPreset, setCurrentPreset] = useState<PresetType>(preset ? preset : 'open');
 
     const useItems = (...params: Parameters<typeof backlogService.getItems>) => {
         return useQuery<PtItem[], Error>(getQueryKey(), () => backlogService.getItems(...params));
-    }
+    };
     const queryResult = useItems(currentPreset);
     const items = queryResult.data;
 
     function getQueryKey() {
-        return ['items', currentPreset];
-    }
+        return ["items", currentPreset];
+      }
 
     const addItemMutation = useMutation(async (newItem: PtNewItem) => {
         if (store.value.currentUser) {
@@ -42,9 +39,9 @@ export function BacklogPage() {
         }
     });
     
-    useEffect(()=>{
-        navigate(`/backlog/${[currentPreset]}`);
-    },[currentPreset]);
+    useEffect(() => {
+        navigate(`/backlog/${currentPreset}`);
+      }, [currentPreset, navigate]);
     
     const [isAddModalShowing, setIsAddModalShowing] = useState(false);
 
@@ -64,22 +61,13 @@ export function BacklogPage() {
         });
     }
 
-
     if (queryResult.isLoading) {
-        return (
-            <div>
-                Loading...
-            </div>
-        );
+        return <div>Loading...</div>;
     }
     
     if (!items) {
-        return (
-            <div>No items</div>
-        );
+        return <div>No items</div>;
     }
-
-
 
     return (
         <React.Fragment>
@@ -103,14 +91,15 @@ export function BacklogPage() {
                 </div>
             </div>
 
-            <BacklogList items={items} />
+            <div className="container" style={{ marginTop: "20px" }}>
+                <BacklogList items={items} />
+            </div>
 
             <AddItemModal 
                 onNewItemSave={onNewItemSave} 
                 modalShowing={isAddModalShowing}
                 setIsAddModalShowing={setIsAddModalShowing}
                 />
-                
         </React.Fragment >
     );
 }
