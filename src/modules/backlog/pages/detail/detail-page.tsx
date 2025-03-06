@@ -1,7 +1,6 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-
 import { Observable } from "rxjs";
 
 import { PtItem, PtUser, PtTask } from "../../../../core/models/domain";
@@ -9,14 +8,22 @@ import { DetailScreenType } from "../../../../shared/models/ui/types/detail-scre
 import { PtItemFormComponent } from "../../components/item-form/pt-item-form";
 import { PtItemTasksComponent } from "../../components/item-tasks/pt-item-tasks";
 import { PtNewTask } from "../../../../shared/models/dto/pt-new-task";
-import { PtTaskTitleUpdate } from "../../../../shared/models/dto/pt-task-update";
+import { PtTaskAllUpdate, PtTaskTitleUpdate } from "../../../../shared/models/dto/pt-task-update";
 import { PtItemChitchatComponent } from "../../components/item-chitchat/pt-item-chitchat";
 import { PtNewComment } from "../../../../shared/models/dto/pt-new-comment";
-
 import { PtBacklogServiceContext, PtStoreContext, PtUserServiceContext } from "../../../../App";
 
+const queryTag = "item";
 
-const queryTag = 'item';
+const screenPositionMap: { [key in DetailScreenType | number]: number | DetailScreenType } =
+{
+  0: "form",
+  1: "tasks",
+  3: "chitchat",
+  form: 0,
+  tasks: 1,
+  chitchat: 3,
+};
 
 export function DetailPage() {
 
@@ -25,27 +32,37 @@ export function DetailPage() {
     const userService = useContext(PtUserServiceContext);
 
     const currentUser = store.value.currentUser;
-    const users$: Observable<PtUser[]> = store.select<PtUser[]>('users');
+    const users$: Observable<PtUser[]> = store.select<PtUser[]>("users");
 
-    const { id: itemId } = useParams() as { id: string };
+    const { id: itemId, screen } = useParams() as {
+        id: string;
+        screen?: DetailScreenType;
+      };
 
     const location = useLocation();
+    const queryClient = useQueryClient();
     const navigate = useNavigate();
+
     const useItem = (...params: Parameters<typeof backlogService.getPtItem>) => {
         return useQuery<PtItem, Error>(queryTag, () => backlogService.getPtItem(...params));
     };
     const queryResult = useItem(parseInt(itemId));
     const item = queryResult.data;
 
-    let selectedDetailsScreen: DetailScreenType = 'form';
-    if (location.pathname.endsWith('/tasks')) {
-        selectedDetailsScreen = 'tasks';
-    } else if (location.pathname.endsWith('/chitchat')) {
-        selectedDetailsScreen = 'chitchat';
-    }
+    const [selectedDetailsScreen, setSelectedDetailsScreen] = useState<DetailScreenType>(
+        screen ? screen : "form"
+    );
 
-    const queryClient = useQueryClient();
-    
+    useEffect(() => {
+        if (location.pathname.endsWith('/tasks')) {
+            setSelectedDetailsScreen('tasks');
+        } else if (location.pathname.endsWith('/chitchat')) {
+            setSelectedDetailsScreen('chitchat');
+        } else if (location.pathname.includes('/detail/') && !location.pathname.includes('/tasks') && !location.pathname.includes('/chitchat')) {
+            setSelectedDetailsScreen('form');
+        }
+    }, [location.pathname]);
+
     const updateItemMutation = useMutation(async (itemToUpdate: PtItem) => {
         const updatedItem = await backlogService.updatePtItem(itemToUpdate);
         return updatedItem;
@@ -61,12 +78,23 @@ export function DetailPage() {
         return updatedTask;
     });
 
-    const updateTaskMutation = useMutation(async (taskUpdate: PtTaskTitleUpdate) => {
+   const updateTaskTitleMutation = useMutation(async (taskUpdate: PtTaskTitleUpdate) => {
+    const updatedTask = await backlogService.updatePtTask(item!, taskUpdate.task, taskUpdate.task.completed, taskUpdate.newTitle);
+    return updatedTask;
+  });    
+  
+  const updateTaskMutation = useMutation(async (taskUpdate: PtTaskAllUpdate) => {
         const updatedTask = await backlogService.updatePtTask(item!, taskUpdate.task, taskUpdate.task.completed, taskUpdate.newTitle);
-        return updatedTask;
+        // Update task dates if they are provided
+        if (taskUpdate.dateStart && taskUpdate.dateEnd) {
+            updatedTask.dateStart = taskUpdate.dateStart;
+            updatedTask.dateEnd = taskUpdate.dateEnd;
+        }
+      
+      return updatedTask;
     });
 
-    const deleteTaskMutation = useMutation(async (task: PtTask ) => {
+    const deleteTaskMutation = useMutation(async (task: PtTask) => {
         const ok = await backlogService.deletePtTask(item!, task);
         return ok;
     });
@@ -87,7 +115,6 @@ export function DetailPage() {
     function onItemSaved(item: PtItem) {
         updateItemMutation.mutate(item, {
             onSuccess: (updatedItem) => {
-                //useQueryClient().setQueryData(queryTag, updatedItem);
                 queryClient.setQueryData(queryTag, updatedItem);
             }
         });
@@ -111,7 +138,7 @@ export function DetailPage() {
                     addTaskMutation={addTaskMutation} 
                     deleteTaskMutation={deleteTaskMutation}
                     toggleTaskCompletionMutation={toggleTaskCompletionMutation}
-                    updateTaskMutation={updateTaskMutation}
+                    updateTaskMutation={updateTaskTitleMutation}
                     />;
             case 'chitchat':
                 return <PtItemChitchatComponent 
@@ -128,17 +155,15 @@ export function DetailPage() {
     
     
     if (queryResult.isLoading) {
-        return <div>Loading...</div>
+        return <div>Loading...</div>;
     }
 
     if (!item) {
-        return <div>No item</div>
+        return <div>No item</div>;
     }
     
     return (
-
-        <div>
-            <div className="container">
+        <div className="container" style={{ paddingBottom: "30px" }}>
                 <div className="row align-items-center justify-content-between">
                     <div className="col-auto">
                         <div className="frame13 d-flex flex-column align-items-start gap-2">
@@ -177,11 +202,10 @@ export function DetailPage() {
                         </div>
                     </div>
                 </div>
-            </div>
+
 
             {screenRender(selectedDetailsScreen, item)}
 
         </div>
     );
-   
 }
