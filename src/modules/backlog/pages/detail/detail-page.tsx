@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Observable } from "rxjs";
 
+import "./detail-page.css";
+
 import { PtItem, PtUser, PtTask } from "../../../../core/models/domain";
 import { DetailScreenType } from "../../../../shared/models/ui/types/detail-screens";
 import { PtItemFormComponent } from "../../components/item-form/pt-item-form";
@@ -166,7 +168,7 @@ export function DetailPage() {
         <div className="container" style={{ paddingBottom: "30px" }}>
                 <div className="row align-items-center justify-content-between">
                     <div className="col-auto">
-                        <div className="frame13 d-flex flex-column align-items-start gap-2">
+                        <div className="frame-details d-flex flex-column align-items-start gap-2">
                             <div className="dashboard-title text-center">{item.title}</div>
                         </div>
                     </div>
