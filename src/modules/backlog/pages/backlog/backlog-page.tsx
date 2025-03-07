@@ -70,12 +70,12 @@ export function BacklogPage() {
     }
 
     return (
-        <React.Fragment>
+        <div className="backlog-page page">
             <div className="container">
                 <div className="row align-items-center justify-content-between">
                     <div className="col-auto">
                         <div className="frame13 d-flex flex-column align-items-start gap-2">
-                            <div className="dashboard-title text-center">Backlog</div>
+                            <div className="page-title">Backlog</div>
                         </div>
                     </div>
                     <div className="col-auto">
@@ -102,6 +102,6 @@ export function BacklogPage() {
                 modalShowing={isAddModalShowing}
                 setIsAddModalShowing={setIsAddModalShowing}
                 />
-        </React.Fragment >
+         </div>
     );
 }

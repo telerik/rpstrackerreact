@@ -80,13 +80,13 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="dashboard-page">
+    <div className="dashboard-page page">
 
       <div className="container">
         <div className="row align-items-center justify-content-between">
           <div className="col-auto">
             <div className="frame13 d-flex flex-column align-items-start gap-2">
-              <div className="dashboard-title text-center">Dashboard</div>
+              <div className="page-title">Dashboard</div>
             </div>
           </div>
 

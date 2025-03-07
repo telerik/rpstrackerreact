@@ -165,11 +165,13 @@ export function DetailPage() {
     }
     
     return (
-        <div className="container" style={{ paddingBottom: "30px" }}>
+        <div className="detail-page page">
+
+            <div className="container">
                 <div className="row align-items-center justify-content-between">
                     <div className="col-auto">
                         <div className="frame-details d-flex flex-column align-items-start gap-2">
-                            <div className="dashboard-title text-center">{item.title}</div>
+                            <div className="page-title">{item.title}</div>
                         </div>
                     </div>
                     <div className="col-auto">
@@ -204,10 +206,14 @@ export function DetailPage() {
                         </div>
                     </div>
                 </div>
+            </div>
 
 
-            {screenRender(selectedDetailsScreen, item)}
+            <div className="container">
 
+                {screenRender(selectedDetailsScreen, item)}
+
+            </div>
         </div>
     );
 }

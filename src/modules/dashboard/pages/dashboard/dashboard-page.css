@@ -2,18 +2,6 @@
   /* Root container for the dashboard page */
 }
 
-/* frame13 container with a fixed width */
-.frame13 {
-  width: 500px;
-}
-
-/* Dashboard title styling */
-.dashboard-title {
-  color: #3D3D3D;
-  font-size: 40px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-}
 
 /* Diagram and Statistics container */
 .DiagramAndStatistics {

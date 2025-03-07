@@ -35,6 +35,23 @@ a {
   font-style: normal;
 }
 
+
+.frame13 {
+  width: 500px;
+}
+
+.page .container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  color: #3D3D3D;
+  font-size: 40px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+}
+
 .nav-item > .app-bar-nav-link {
   text-align: center;
   color: #068597 !important;
