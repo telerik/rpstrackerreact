@@ -33,7 +33,7 @@ export function PtItemFormComponent(props: PtItemFormComponentProps) {
         if (!itemForm) {
             return;
         }
-        (itemForm as any)[formFieldName] = e.target.value;
+        (itemForm as any)[formFieldName] = e.target?.value ?? e.value;
     }
 
     function onNonTextFieldChange(e: any, formFieldName: string) {
@@ -49,8 +49,10 @@ export function PtItemFormComponent(props: PtItemFormComponentProps) {
         if (!itemForm) {
             return;
         }
-        const updatedItem = getUpdatedItem(props.item, itemForm, selectedAssignee!);
-        props.itemSaved(updatedItem);
+        setTimeout(() => {
+            const updatedItem = getUpdatedItem(props.item, itemForm, selectedAssignee!);
+            props.itemSaved(updatedItem);
+        }, 1);
     }
 
     function getUpdatedItem(item: PtItem, itemForm: PtItemDetailsEditFormModel, assignee: PtUser): PtItem {
