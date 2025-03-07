@@ -90,23 +90,30 @@ export function PtItemFormComponent(props: PtItemFormComponentProps) {
     return (
         <React.Fragment>
             <form>
-                <div className="form-group row">
+                <div className="form-group row mb-3">
                     <label className="col-sm-2 col-form-label">Title</label>
-                    <div className="col-sm-10">
+                    <div className="col-sm-6">
                         <input className="form-control" defaultValue={itemForm.title} onBlur={() => onBlurTextField()} onChange={(e) => onFieldChange(e, 'title')} name="title" />
                     </div>
                 </div>
 
-                <div className="form-group row">
+                <div className="form-group row mb-3">
                     <label className="col-sm-2 col-form-label">Description</label>
-                    <div className="col-sm-10">
+                    <div className="col-sm-6">
                         <textarea className="form-control" defaultValue={itemForm.description} onBlur={() => onBlurTextField()} onChange={(e) => onFieldChange(e, 'description')} name="description"></textarea>
                     </div>
                 </div>
 
-                <div className="form-group row">
+                <div className="form-group row mb-3">
+                    <label className="col-sm-2 col-form-label">Estimate</label>
+                    <div className="col-sm-6">
+                        <input className="form-control" type="range" step="1" min="0" max="20" value={itemForm.estimate} onChange={(e) => onNonTextFieldChange(e, 'estimate')} name="estimate" style={{ width: 300 }} />
+                    </div>
+                </div>
+
+                <div className="form-group row mb-3">
                     <label className="col-sm-2 col-form-label">Item Type</label>
-                    <div className="col-sm-10">
+                    <div className="col-sm-6">
                         <select className="form-control" defaultValue={itemForm.typeStr} onChange={(e) => onNonTextFieldChange(e, 'typeStr')} name="itemType">
                             {
                                 itemTypesProvider.map(t => {
@@ -121,9 +128,9 @@ export function PtItemFormComponent(props: PtItemFormComponentProps) {
                     </div>
                 </div>
 
-                <div className="form-group row">
+                <div className="form-group row mb-3">
                     <label className="col-sm-2 col-form-label">Status</label>
-                    <div className="col-sm-10">
+                    <div className="col-sm-6">
                         <select className="form-control" defaultValue={itemForm.statusStr} onChange={(e) => onNonTextFieldChange(e, 'statusStr')} name="status">
                             {
                                 statusesProvider.map(t => {
@@ -138,16 +145,9 @@ export function PtItemFormComponent(props: PtItemFormComponentProps) {
                     </div>
                 </div>
 
-                <div className="form-group row">
-                    <label className="col-sm-2 col-form-label">Estimate</label>
-                    <div className="col-sm-10">
-                        <input className="form-control" type="range" step="1" min="0" max="20" value={itemForm.estimate} onChange={(e) => onNonTextFieldChange(e, 'estimate')} name="estimate" style={{ width: 300 }} />
-                    </div>
-                </div>
-
-                <div className="form-group row">
+                <div className="form-group row mb-3">
                     <label className="col-sm-2 col-form-label">Priority</label>
-                    <div className="col-sm-10">
+                    <div className="col-sm-6">
                         <select className="form-control" defaultValue={itemForm.priorityStr} onChange={(e) => onNonTextFieldChange(e, 'priorityStr')} name="priority">
                             {
                                 prioritiesProvider.map(t => {
@@ -162,12 +162,18 @@ export function PtItemFormComponent(props: PtItemFormComponentProps) {
                     </div>
                 </div>
 
-                <div className="form-group row">
+                <div className="form-group row mb-3">
                     <label className="col-sm-2 col-form-label">Assignee</label>
-                    <div className="col-sm-10">
-                        <img src={selectedAssignee!.avatar} className="li-avatar rounded" />
-                        <span>{itemForm.assigneeName}</span>
-                        <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => assigneePickerOpen()}>Pick assignee</button>
+                    <div className="col-sm-6">
+                        <div className="row">
+                            <div className="col-sm-8">
+                                <img src={selectedAssignee!.avatar} className="li-avatar rounded" style={{ marginRight: '10px' }}  />
+                                <span>{itemForm.assigneeName}</span>
+                            </div>
+                            <div className="col-sm-4">
+                                <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => assigneePickerOpen()}>Pick assignee</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
