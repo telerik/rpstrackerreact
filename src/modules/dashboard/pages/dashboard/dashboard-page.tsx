@@ -93,7 +93,7 @@ export function DashboardPage() {
           <div className="col-auto">
             <div className="Tools d-flex gap-3">
               <div className="btn-toolbar mb-2 mb-md-0">
-                <div className="btn-group mr-2">
+                <div className="btn-group me-2">
                   <button type="button" onClick={() => onMonthRangeTap(3)}>
                     3 Months
                   </button>
