@@ -17,94 +17,19 @@ export function ActiveIssuesComponent(props: ActiveIssuesProps) {
   }
 
   return (
-    <div
-      className="active-issues-container"
-      style={{
-            alignSelf: "stretch",
-            paddingLeft: "192px", 
-            paddingRight: "192px",
-            paddingTop: "16px", 
-            paddingBottom: "16px",
-            background: "#FAFAFA", 
-            borderRadius: "4px",
-            justifyContent: "space-between", 
-            alignItems: "center",
-            display: "inline-flex"
-      }}
-    >
+    <div className="active-issues-container">
       {/* Active Issues */}
-      <div
-        className="Numbers"
-        style={{
-          display: "inline-flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div
-          className="Label"
-          style={{
-            width: "105px",
-            height: "48px",
-            display: "inline-flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-          }}
-        >
-          <div
-            className="BaseInputLabel"
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            <div
-              className="Label"
-              style={{
-                color: "#3D3D3D",
-                fontSize: "42px",
-                fontFamily: "Roboto",
-                fontWeight: 400,
-                lineHeight: "55.86px",
-                wordWrap: "break-word",
-              }}
-            >
+      <div className="numbers">
+        <div className="label-container">
+          <div className="base-input-label">
+            <div className="count-label color-default">
               {props.statusCounts.activeItemsCount}
             </div>
           </div>
         </div>
-        <div
-          className="Label"
-          style={{
-            alignSelf: "stretch",
-            display: "inline-flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-          }}
-        >
-          <div
-            className="BaseInputLabel"
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            <div
-              className="Label"
-              style={{
-                color: "#3D3D3D",
-                fontSize: "16px",
-                fontFamily: "Roboto",
-                fontWeight: 400,
-                lineHeight: "24px",
-                wordWrap: "break-word",
-              }}
-            >
+        <div className="label-full-width">
+          <div className="base-input-label">
+            <div className="text-label color-default">
               Active Issues
             </div>
           </div>
@@ -112,78 +37,17 @@ export function ActiveIssuesComponent(props: ActiveIssuesProps) {
       </div>
 
       {/* Closed Issues */}
-      <div
-        className="Numbers"
-        style={{
-          display: "inline-flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div
-          className="Label"
-          style={{
-            width: "105px",
-            height: "48px",
-            display: "inline-flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-          }}
-        >
-          <div
-            className="BaseInputLabel"
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            <div
-              className="Label"
-              style={{
-                color: "#399D60",
-                fontSize: "42px",
-                fontFamily: "Roboto",
-                fontWeight: 400,
-                lineHeight: "55.86px",
-                wordWrap: "break-word",
-              }}
-            >
+      <div className="numbers">
+        <div className="label-container">
+          <div className="base-input-label">
+            <div className="count-label color-closed">
               {props.statusCounts.closedItemsCount}
             </div>
           </div>
         </div>
-        <div
-          className="Label"
-          style={{
-            alignSelf: "stretch",
-            display: "inline-flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-          }}
-        >
-          <div
-            className="BaseInputLabel"
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            <div
-              className="Label"
-              style={{
-                color: "#399D60",
-                fontSize: "16px",
-                fontFamily: "Roboto",
-                fontWeight: 400,
-                lineHeight: "24px",
-                wordWrap: "break-word",
-              }}
-            >
+        <div className="label-full-width">
+          <div className="base-input-label">
+            <div className="text-label color-closed">
               Closed Issues
             </div>
           </div>
@@ -191,78 +55,17 @@ export function ActiveIssuesComponent(props: ActiveIssuesProps) {
       </div>
 
       {/* Open Issues */}
-      <div
-        className="Numbers"
-        style={{
-          display: "inline-flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div
-          className="Label"
-          style={{
-            width: "105px",
-            height: "48px",
-            display: "inline-flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-          }}
-        >
-          <div
-            className="BaseInputLabel"
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            <div
-              className="Label"
-              style={{
-                color: "#8142BF",
-                fontSize: "42px",
-                fontFamily: "Roboto",
-                fontWeight: 400,
-                lineHeight: "55.86px",
-                wordWrap: "break-word",
-              }}
-            >
+      <div className="numbers">
+        <div className="label-container">
+          <div className="base-input-label">
+            <div className="count-label color-open">
               {props.statusCounts.openItemsCount}
             </div>
           </div>
         </div>
-        <div
-          className="Label"
-          style={{
-            alignSelf: "stretch",
-            display: "inline-flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
-          }}
-        >
-          <div
-            className="BaseInputLabel"
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            <div
-              className="Label"
-              style={{
-                color: "#8142BF",
-                fontSize: "16px",
-                fontFamily: "Roboto",
-                fontWeight: 400,
-                lineHeight: "24px",
-                wordWrap: "break-word",
-              }}
-            >
+        <div className="label-full-width">
+          <div className="base-input-label">
+            <div className="text-label color-open">
               Open Issues
             </div>
           </div>
@@ -270,56 +73,11 @@ export function ActiveIssuesComponent(props: ActiveIssuesProps) {
       </div>
 
       {/* Close Rate */}
-      <div
-        className="Numbers"
-        style={{
-          display: "inline-flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "6px",
-        }}
-      >
-        <div
-          className="Frame35"
-          style={{
-            alignSelf: "stretch",
-            height: "72px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignItems: "center",
-          }}
-        >
-          <div
-            className="Label"
-            style={{
-              height: "48px",
-              display: "inline-flex",
-              justifyContent: "center",
-              alignItems: "flex-start",
-            }}
-          >
-            <div
-              className="BaseInputLabel"
-              style={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                gap: "6px",
-              }}
-            >
-              <div
-                className="Label"
-                style={{
-                  color: "#3D3D3D",
-                  fontSize: "42px",
-                  fontFamily: "Roboto",
-                  fontWeight: 400,
-                  lineHeight: "55.86px",
-                  wordWrap: "break-word",
-                }}
-              >
+      <div className="numbers">
+        <div className="close-rate-container">
+          <div className="label-container">
+            <div className="base-input-label">
+              <div className="count-label color-default">
                 {Intl.NumberFormat("en-US", {
                   maximumSignificantDigits: 4,
                 }).format(props.statusCounts.closeRate)}
@@ -327,35 +85,9 @@ export function ActiveIssuesComponent(props: ActiveIssuesProps) {
               </div>
             </div>
           </div>
-          <div
-            className="Label"
-            style={{
-              alignSelf: "stretch",
-              display: "inline-flex",
-              justifyContent: "center",
-              alignItems: "flex-start",
-            }}
-          >
-            <div
-              className="BaseInputLabel"
-              style={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                gap: "6px",
-              }}
-            >
-              <div
-                className="Label"
-                style={{
-                  color: "#3D3D3D",
-                  fontSize: "16px",
-                  fontFamily: "Roboto",
-                  fontWeight: 400,
-                  lineHeight: "24px",
-                  wordWrap: "break-word",
-                }}
-              >
+          <div className="label-full-width">
+            <div className="base-input-label">
+              <div className="text-label color-default">
                 Close Rate
               </div>
             </div>

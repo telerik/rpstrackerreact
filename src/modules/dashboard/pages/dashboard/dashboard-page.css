@@ -15,16 +15,7 @@
 
 /* A general statistics container block with background & padding */
 .StatisticsBlock {
-  align-self: stretch;
-  padding-left: 192px;
-  padding-right: 192px;
-  padding-top: 16px;
-  padding-bottom: 16px;
-  background: #FAFAFA;
-  border-radius: 4px;
-  justify-content: space-between;
-  align-items: center;
-  display: inline-flex;
+  width:100%;
 }
 
 /* frame36 container */

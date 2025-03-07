@@ -111,51 +111,53 @@ export function DashboardPage() {
       </div>
 
       {/* Diagram and Statistics Section */}
-      <div className="DiagramAndStatistics">
-        {/* Active Issues */}
-        <div className="Statistics StatisticsBlock">
-          <ActiveIssuesComponent statusCounts={statusCounts} />
-        </div>
+      <div className="container">
+        <div className="DiagramAndStatistics">
+          {/* Active Issues */}
+          <div className="StatisticsBlock">
+            <ActiveIssuesComponent statusCounts={statusCounts} />
+          </div>
 
-        {/* Additional Statistics Section */}
-        <div className="frame36 stretch-height">
-          <div className="frame38">
-            {/* Left Statistics Block */}
-            <div className="Statistics left-stat-block">
-              <div className="Label inline-flex">
-                <div className="BaseInputLabel gap-6">
-                <div className="statistics-heading">All Issues</div>
+          {/* Additional Statistics Section */}
+          <div className="frame36 stretch-height">
+            <div className="frame38">
+              {/* Left Statistics Block */}
+              <div className="Statistics left-stat-block">
+                <div className="Label inline-flex">
+                  <div className="BaseInputLabel gap-6">
+                  <div className="statistics-heading">All Issues</div>
+                  </div>
                 </div>
-              </div>
-              <div className="Label inline-flex">
-                <div className="BaseInputLabel gap-6">
-                <div className="statistics-subheading">Active Issues</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Statistics Block */}
-            <div className="Statistics right-stat-block">
-              <div className="Label inline-flex">
-                <div className="BaseInputLabel gap-6">
-                  <div className="statistics-subheading">
-                    Highest: 100% on Oct 11, 2018
+                <div className="Label inline-flex">
+                  <div className="BaseInputLabel gap-6">
+                  <div className="statistics-subheading">Active Issues</div>
                   </div>
                 </div>
               </div>
-              <div className="Label inline-flex">
-                <div className="BaseInputLabel gap-6">
-                  <div className="statistics-subheading">
-                    Lowest: 20% on Oct 9, 2018
+
+              {/* Right Statistics Block */}
+              <div className="Statistics right-stat-block">
+                <div className="Label inline-flex">
+                  <div className="BaseInputLabel gap-6">
+                    <div className="statistics-subheading">
+                      Highest: 100% on Oct 11, 2018
+                    </div>
+                  </div>
+                </div>
+                <div className="Label inline-flex">
+                  <div className="BaseInputLabel gap-6">
+                    <div className="statistics-subheading">
+                      Lowest: 20% on Oct 9, 2018
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="frame36 chart-section">
-          {/* Insert your chart component or markup here */}
+          <div className="frame36 chart-section">
+            {/* Insert your chart component or markup here */}
+          </div>
         </div>
       </div>
     </div>
