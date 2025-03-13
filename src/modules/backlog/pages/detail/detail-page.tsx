@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Observable } from "rxjs";
 
@@ -46,13 +46,21 @@ export function DetailPage() {
     const navigate = useNavigate();
 
     const useItem = (...params: Parameters<typeof backlogService.getPtItem>) => {
-        return useQuery<PtItem, Error>(queryTag, () => backlogService.getPtItem(...params));
+        return useQuery<PtItem, Error>({
+            queryKey: [queryTag, ...params],
+            queryFn: () => backlogService.getPtItem(...params)
+        });
     };
-    const queryResult = useItem(parseInt(itemId));
+    
+    const queryResult = useQuery<PtItem, Error>({
+        queryKey: [queryTag, parseInt(itemId)],
+        queryFn: () => backlogService.getPtItem(parseInt(itemId))
+    });
+    
     const item = queryResult.data;
 
     const [selectedDetailsScreen, setSelectedDetailsScreen] = useState<DetailScreenType>(
-        screen ? screen : "form"
+        screen as DetailScreenType || "form"
     );
 
     useEffect(() => {
@@ -65,45 +73,59 @@ export function DetailPage() {
         }
     }, [location.pathname]);
 
-    const updateItemMutation = useMutation(async (itemToUpdate: PtItem) => {
-        const updatedItem = await backlogService.updatePtItem(itemToUpdate);
-        return updatedItem;
+    const updateItemMutation = useMutation<PtItem, Error, PtItem>({
+        mutationFn: async (itemToUpdate: PtItem) => {
+            const updatedItem = await backlogService.updatePtItem(itemToUpdate);
+            return updatedItem;
+        }
     });
     
-    const addTaskMutation = useMutation(async (newTaskItem: PtNewTask) => {
-        const createdTask = await backlogService.addNewPtTask(newTaskItem, item!);
-        return createdTask;
-    });
-
-    const toggleTaskCompletionMutation = useMutation(async (task: PtTask) => {
-        const updatedTask = await backlogService.updatePtTask(item!, task, true);
-        return updatedTask;
-    });
-
-   const updateTaskTitleMutation = useMutation(async (taskUpdate: PtTaskTitleUpdate) => {
-    const updatedTask = await backlogService.updatePtTask(item!, taskUpdate.task, taskUpdate.task.completed, taskUpdate.newTitle);
-    return updatedTask;
-  });    
-  
-  const updateTaskMutation = useMutation(async (taskUpdate: PtTaskAllUpdate) => {
-        const updatedTask = await backlogService.updatePtTask(item!, taskUpdate.task, taskUpdate.task.completed, taskUpdate.newTitle);
-        // Update task dates if they are provided
-        if (taskUpdate.dateStart && taskUpdate.dateEnd) {
-            updatedTask.dateStart = taskUpdate.dateStart;
-            updatedTask.dateEnd = taskUpdate.dateEnd;
+    const addTaskMutation = useMutation<PtTask, Error, PtNewTask>({
+        mutationFn: async (newTaskItem: PtNewTask) => {
+            const createdTask = await backlogService.addNewPtTask(newTaskItem, item!);
+            return createdTask;
         }
-      
-      return updatedTask;
     });
 
-    const deleteTaskMutation = useMutation(async (task: PtTask) => {
-        const ok = await backlogService.deletePtTask(item!, task);
-        return ok;
+    const toggleTaskCompletionMutation = useMutation<PtTask, Error, PtTask>({
+        mutationFn: async (task: PtTask) => {
+            const updatedTask = await backlogService.updatePtTask(item!, task, true);
+            return updatedTask;
+        }
     });
 
-    const addCommentMutation = useMutation(async (newCommentItem: PtNewComment) => {
-        const createdComment = await backlogService.addNewPtComment(newCommentItem, item!);
-        return createdComment;
+   const updateTaskTitleMutation = useMutation<PtTask, Error, PtTaskTitleUpdate>({
+        mutationFn: async (taskUpdate: PtTaskTitleUpdate) => {
+            const updatedTask = await backlogService.updatePtTask(item!, taskUpdate.task, taskUpdate.task.completed, taskUpdate.newTitle);
+            return updatedTask;
+        }
+    });    
+  
+    const updateTaskMutation = useMutation<PtTask, Error, PtTaskAllUpdate>({
+        mutationFn: async (taskUpdate: PtTaskAllUpdate) => {
+            const updatedTask = await backlogService.updatePtTask(item!, taskUpdate.task, taskUpdate.task.completed, taskUpdate.newTitle);
+            // Update task dates if they are provided
+            if (taskUpdate.dateStart && taskUpdate.dateEnd) {
+                updatedTask.dateStart = taskUpdate.dateStart;
+                updatedTask.dateEnd = taskUpdate.dateEnd;
+            }
+            
+            return updatedTask;
+        }
+    });
+
+    const deleteTaskMutation = useMutation<boolean, Error, PtTask>({
+        mutationFn: async (task: PtTask) => {
+            const ok = await backlogService.deletePtTask(item!, task);
+            return ok;
+        }
+    });
+
+    const addCommentMutation = useMutation<any, Error, PtNewComment>({
+        mutationFn: async (newCommentItem: PtNewComment) => {
+            const createdComment = await backlogService.addNewPtComment(newCommentItem, item!);
+            return createdComment;
+        }
     });
 
     function onScreenSelected(screen: DetailScreenType) {
@@ -117,7 +139,7 @@ export function DetailPage() {
     function onItemSaved(item: PtItem) {
         updateItemMutation.mutate(item, {
             onSuccess: (updatedItem) => {
-                queryClient.setQueryData(queryTag, updatedItem);
+                queryClient.setQueryData([queryTag, parseInt(itemId)], updatedItem);
             }
         });
     }
@@ -150,12 +172,10 @@ export function DetailPage() {
                 />;
 
             default:
-                return <PtItemFormComponent item={item} users$={users$} usersRequested={() => onUsersRequested()} itemSaved={(item) => onItemSaved(item)} />;
+                return <PtItemFormComponent item={item} users$={users$} usersRequested={onUsersRequested} itemSaved={onItemSaved} />;
         }
     }
 
-    
-    
     if (queryResult.isLoading) {
         return <div>Loading...</div>;
     }

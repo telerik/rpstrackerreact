@@ -4,7 +4,7 @@ import { PtNewComment } from "../../../../shared/models/dto/pt-new-comment";
 
 import './pt-item-chitchat.css';
 import { NewCommentForm } from "./new-comment-form";
-import { UseMutationResult } from "react-query";
+import { UseMutationResult } from "@tanstack/react-query";
 import { PtCommentDisplayComponent } from "./comment-display";
 
 export type PtItemChitchatComponentProps = {

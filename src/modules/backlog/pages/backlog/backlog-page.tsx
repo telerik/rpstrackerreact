@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";;
 
 import "./backlog-page.css";
 
@@ -7,7 +8,7 @@ import { PresetType } from "../../../../core/models/domain/types";
 import { PtItem } from "../../../../core/models/domain";
 import { AppPresetFilter } from "../../../../shared/components/preset-filter/preset-filter";
 import { PtNewItem } from "../../../../shared/models/dto/pt-new-item";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+
 import { AddItemModal } from "../../components/add-item-modal/add-item-modal";
 import { PtBacklogServiceContext, PtStoreContext } from "../../../../App";
 import { BacklogList } from "../../components/backlog-list/backlog-list";
@@ -23,7 +24,7 @@ export function BacklogPage() {
     const [currentPreset, setCurrentPreset] = useState<PresetType>(preset ? preset : 'open');
 
     const useItems = (...params: Parameters<typeof backlogService.getItems>) => {
-        return useQuery<PtItem[], Error>(getQueryKey(), () => backlogService.getItems(...params));
+        return useQuery<PtItem[], Error>({ queryKey: getQueryKey(), queryFn: () => backlogService.getItems(...params) });
     };
     const queryResult = useItems(currentPreset);
     const items = queryResult.data;
@@ -32,8 +33,11 @@ export function BacklogPage() {
         return ["items", currentPreset];
       }
 
-    const addItemMutation = useMutation(async (newItem: PtNewItem) => {
-        if (store.value.currentUser) {
+    const addItemMutation = useMutation<PtItem, Error, PtNewItem>({
+        mutationFn: async (newItem: PtNewItem) => {
+            if (!store.value.currentUser) {
+                throw new Error("Current user is not defined");
+            }
             const createdItem = await backlogService.addNewPtItem(newItem, store.value.currentUser);
             return createdItem;
         }
@@ -56,7 +60,7 @@ export function BacklogPage() {
     function onNewItemSave(newItem: PtNewItem) {
         return addItemMutation.mutateAsync(newItem, {
             onSuccess(createdItem, variables, context) {
-                queryClient.invalidateQueries(getQueryKey());
+                queryClient.invalidateQueries({ queryKey: getQueryKey() });
             },
         });
     }

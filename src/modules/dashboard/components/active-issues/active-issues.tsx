@@ -1,4 +1,3 @@
-import React from "react";
 import { StatusCounts } from "../../models";
 import "./active-issues.css";
 

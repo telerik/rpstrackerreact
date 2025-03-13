@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { BacklogPage } from './modules/backlog/pages/backlog/backlog-page';
 import { DashboardPage } from './modules/dashboard/pages/dashboard/dashboard-page';

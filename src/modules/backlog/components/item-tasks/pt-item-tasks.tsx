@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UseMutationResult } from "react-query";
+import { UseMutationResult } from "@tanstack/react-query";
 
 import { PtTask } from "../../../../core/models/domain";
 import { EMPTY_STRING } from "../../../../core/helpers";
