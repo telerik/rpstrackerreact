@@ -2,18 +2,10 @@ import { StatusCounts } from "../../models";
 import "./active-issues.css";
 
 interface ActiveIssuesProps {
-  statusCounts: StatusCounts;
+  statusCounts: StatusCounts | undefined;
 }
 
 export function ActiveIssuesComponent(props: ActiveIssuesProps) {
-  if (!props.statusCounts) {
-    return (
-      <div className="card">
-        <h3 className="card-header">Active Issues</h3>
-        <div className="card-block" />
-      </div>
-    );
-  }
 
   return (
     <div className="active-issues-container">
@@ -22,7 +14,7 @@ export function ActiveIssuesComponent(props: ActiveIssuesProps) {
         <div className="label-container">
           <div className="base-input-label">
             <div className="count-label color-default">
-              {props.statusCounts.activeItemsCount}
+              {props.statusCounts?.activeItemsCount ?? ''}
             </div>
           </div>
         </div>
@@ -40,7 +32,7 @@ export function ActiveIssuesComponent(props: ActiveIssuesProps) {
         <div className="label-container">
           <div className="base-input-label">
             <div className="count-label color-closed">
-              {props.statusCounts.closedItemsCount}
+              {props.statusCounts?.closedItemsCount ?? ''}
             </div>
           </div>
         </div>
@@ -58,7 +50,7 @@ export function ActiveIssuesComponent(props: ActiveIssuesProps) {
         <div className="label-container">
           <div className="base-input-label">
             <div className="count-label color-open">
-              {props.statusCounts.openItemsCount}
+              {props.statusCounts?.openItemsCount ?? ''}
             </div>
           </div>
         </div>
@@ -76,10 +68,10 @@ export function ActiveIssuesComponent(props: ActiveIssuesProps) {
         <div className="close-rate-container">
           <div className="label-container">
             <div className="base-input-label">
-              <div className="count-label color-default">
+            <div className="count-label color-default">
                 {Intl.NumberFormat("en-US", {
                   maximumSignificantDigits: 4,
-                }).format(props.statusCounts.closeRate)}
+                }).format(props.statusCounts?.closeRate ?? 0)}
                 %
               </div>
             </div>
